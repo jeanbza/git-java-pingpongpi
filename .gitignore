@@ -1,0 +1,9 @@
+*.iml
+logs
+.DS_Store
+*.pid
+*.state
+.gradle
+build
+*.class
+.idea

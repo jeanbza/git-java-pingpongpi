@@ -1,0 +1,5 @@
+---
+applications:
+  - name: pipingpong
+    buildpack: java_buildpack
+    path: build/libs/gs-rest-service-0.1.0.jar
