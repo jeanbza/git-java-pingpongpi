@@ -1,4 +1,4 @@
-package hello;
+package activity;
 
 public class Greeting {
 
