@@ -26,7 +26,6 @@ public class Application {
     @Bean
     JdbcTemplate jdbcTemplate(DataSource dataSource) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.update("insert into activity(id, active) values (?, ?)", 5, 1);
         return jdbcTemplate;
     }
 
