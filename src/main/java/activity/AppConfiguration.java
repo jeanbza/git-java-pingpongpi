@@ -17,16 +17,12 @@ public class AppConfiguration {
         dataSource.setUsername("root");
         dataSource.setPassword("");
 
-        System.out.println("boom");
-
         return dataSource;
     }
 
     @Bean
     JdbcTemplate jdbcTemplate(DataSource dataSource) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-
-        System.out.println("bam");
 
         return jdbcTemplate;
     }
