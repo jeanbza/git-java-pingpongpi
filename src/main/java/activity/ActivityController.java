@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ActivityController {
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    @Autowired JdbcTemplate jdbcTemplate;
 
     @RequestMapping(value = "/activity", method = RequestMethod.GET)
     public ResponseEntity<String> greeting() {
