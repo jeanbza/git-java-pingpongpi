@@ -14,8 +14,11 @@ import static java.text.MessageFormat.format;
 
 @RestController
 public class ActivityController {
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired public ActivityController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @RequestMapping(value = "/activity", method = RequestMethod.GET)
     public ResponseEntity<String> greeting() {
