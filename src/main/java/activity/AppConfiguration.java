@@ -23,7 +23,7 @@ public class AppConfiguration {
         @Bean
         JdbcTemplate jdbcTemplate(DataSource dataSource) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-            jdbcTemplate.update("CREATE TABLE IF NOT EXISTS activity(id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, active TINYINT(1) DEFAULT NULL)");
+            createInitialTables(jdbcTemplate);
             return jdbcTemplate;
         }
     }
@@ -45,8 +45,13 @@ public class AppConfiguration {
         @Bean
         JdbcTemplate jdbcTemplate(DataSource dataSource) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-            jdbcTemplate.update("CREATE TABLE IF NOT EXISTS activity(id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, active TINYINT(1) DEFAULT NULL)");
+            createInitialTables(jdbcTemplate);
             return jdbcTemplate;
         }
+    }
+
+    private static void createInitialTables(JdbcTemplate jdbcTemplate) {
+        jdbcTemplate.update("CREATE TABLE IF NOT EXISTS activity(id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+            " active TINYINT(1) DEFAULT NULL, created_at TIMESTAMP DEFAULT NOW())");
     }
 }
