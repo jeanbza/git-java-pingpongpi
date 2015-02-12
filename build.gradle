@@ -15,8 +15,8 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 jar {
-    baseName = 'pingpongpi'
-    version =  '0.2.0'
+    baseName = 'pipingpong'
+    version =  '0.3.0'
 }
 
 repositories {
