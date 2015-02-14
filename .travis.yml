@@ -2,5 +2,9 @@ language: java
 jdk:
   - oraclejdk8
 before_script:
-  mysql -u root -e 'CREATE DATABASE pingpong_test'
-  mysql -u root -e 'CREATE TABLE IF NOT EXISTS pingpong_test.activity(id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, active TINYINT(1) DEFAULT NULL, created_at TIMESTAMP DEFAULT NOW())'
+  mysql -e 'CREATE DATABASE IF NOT EXISTS pingpong_test;' -u root
+  mysql -e 'CREATE TABLE IF NOT EXISTS pingpong_test.activity(
+    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    active TINYINT(1) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+  );' -u root
