@@ -1,4 +1,4 @@
-package activity;
+package Activity;
 
 import org.springframework.cloud.*;
 import org.springframework.context.annotation.*;
@@ -7,6 +7,8 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+
+import static TestUtils.TestDatabase.createInitialTables;
 
 public class AppConfiguration {
     @Configuration
@@ -35,7 +37,7 @@ public class AppConfiguration {
         public DataSource dataSource() throws SQLException {
             SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
             dataSource.setDriver(new com.mysql.jdbc.Driver());
-            dataSource.setUrl("jdbc:mysql://localhost/spring_test");
+            dataSource.setUrl("jdbc:mysql://localhost/pingpong");
             dataSource.setUsername("root");
             dataSource.setPassword("");
 
@@ -48,10 +50,5 @@ public class AppConfiguration {
             createInitialTables(jdbcTemplate);
             return jdbcTemplate;
         }
-    }
-
-    private static void createInitialTables(JdbcTemplate jdbcTemplate) {
-        jdbcTemplate.update("CREATE TABLE IF NOT EXISTS activity(id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-            " active TINYINT(1) DEFAULT NULL, created_at TIMESTAMP DEFAULT NOW())");
     }
 }

@@ -16,7 +16,7 @@ apply plugin: 'spring-boot'
 
 jar {
     baseName = 'pipingpong'
-    version =  '0.3.0'
+    version =  '0.4.0'
 }
 
 repositories {
@@ -26,11 +26,12 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework:spring-jdbc")
-    compile("mysql:mysql-connector-java:5.1.16")
-    compile 'org.springframework.cloud:spring-cloud-spring-service-connector:1.1.1.RELEASE'
-    compile 'org.springframework.cloud:spring-cloud-cloudfoundry-connector:1.1.1.RELEASE'
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework:spring-jdbc"
+    compile "mysql:mysql-connector-java:5.1.16"
+    compile "commons-collections:commons-collections:3.0"
+    compile "org.springframework.cloud:spring-cloud-spring-service-connector:1.1.1.RELEASE"
+    compile "org.springframework.cloud:spring-cloud-cloudfoundry-connector:1.1.1.RELEASE"
 
     testCompile(
         "junit:junit:4.11",
