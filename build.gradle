@@ -4,34 +4,40 @@ buildscript {
         mavenLocal()
         mavenCentral()
     }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.10.RELEASE")
-    }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: 'war'
 
-jar {
+war {
     baseName = 'pipingpong'
-    version =  '0.4.0'
+    version =  '0.5.0'
 }
 
 repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
     maven { url "https://repo.spring.io/libs-release" }
 }
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-web"
-    compile "org.springframework:spring-jdbc"
-    compile "mysql:mysql-connector-java:5.1.16"
-    compile "commons-collections:commons-collections:3.0"
+    compile "org.springframework:spring-core:4.0.6.RELEASE"
+    compile "org.springframework:spring-web:4.0.6.RELEASE"
+    compile "org.springframework:spring-webmvc:4.0.6.RELEASE"
+    compile "org.springframework:spring-jdbc:4.0.6.RELEASE"
     compile "org.springframework.cloud:spring-cloud-spring-service-connector:1.1.1.RELEASE"
     compile "org.springframework.cloud:spring-cloud-cloudfoundry-connector:1.1.1.RELEASE"
+
+    compile "javax.servlet:javax.servlet-api:3.1.0"
+    compile "javax.servlet.jsp.jstl:jstl-api:1.2"
+    compile "javax.servlet.jsp:javax.servlet.jsp-api:2.3.1"
+
+    compile "org.codehaus.jackson:jackson-mapper-asl:1.9.13"
+    compile "mysql:mysql-connector-java:5.1.16"
+    compile "commons-collections:commons-collections:3.0"
 
     testCompile(
         "junit:junit:4.11",
@@ -44,3 +50,5 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
+
+defaultTasks 'clean', 'build', 'war'

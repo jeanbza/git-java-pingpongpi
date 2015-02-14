@@ -1,9 +1,10 @@
-package Activity;
+package Application;
 
 import org.springframework.cloud.*;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import static DatabaseUtils.Database.createInitialTables;
 
 public class AppConfiguration {
+    @EnableWebMvc
     @Configuration
     @Profile("cloud")
     static class CloudConfiguration {
@@ -30,6 +32,7 @@ public class AppConfiguration {
         }
     }
 
+    @EnableWebMvc
     @Configuration
     @Profile("default")
     static class LocalConfiguration {
