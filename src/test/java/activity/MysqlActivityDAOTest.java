@@ -1,6 +1,6 @@
 package Activity;
 
-import TestUtils.TestDatabase;
+import DatabaseUtils.Database;
 import org.junit.*;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.*;
@@ -21,7 +21,7 @@ public class MysqlActivityDAOTest {
     @Before
     public void setup() throws Exception {
         initMocks(this);
-        TestDatabase testDatabase = new TestDatabase();
+        Database testDatabase = new Database();
         jdbcTemplate = testDatabase.getJdbcTemplate();
 
         dao = new MysqlActivityDAO(jdbcTemplate);

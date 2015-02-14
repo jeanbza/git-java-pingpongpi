@@ -1,4 +1,4 @@
-package TestUtils;
+package DatabaseUtils;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -6,11 +6,11 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-public class TestDatabase {
+public class Database {
     private final DataSource dataSource;
     private final JdbcTemplate jdbcTemplate;
 
-    public TestDatabase() throws SQLException {
+    public Database() throws SQLException {
         dataSource = getDataSource();
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         this.jdbcTemplate = jdbcTemplate;

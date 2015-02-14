@@ -8,7 +8,7 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-import static TestUtils.TestDatabase.createInitialTables;
+import static DatabaseUtils.Database.createInitialTables;
 
 public class AppConfiguration {
     @Configuration
