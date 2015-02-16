@@ -88,6 +88,35 @@ public class MysqlActivityDAOTest {
     }
 
     @Test
+    public void createActivities_withExistingData() throws Exception {
+        jdbcTemplate.update("INSERT INTO daily_activity(date, total_active, total_inactive, active_hour_1, inactive_hour_1)" +
+            " VALUES ('2013-01-01', 3, 5, 3, 5)");
+
+        List<Activity> activitiesToPersist = asList(
+            new Activity(true, LocalDateTime.parse("2013-01-01T01:01:01")),
+            new Activity(true, LocalDateTime.parse("2013-01-01T01:02:01")),
+            new Activity(false, LocalDateTime.parse("2013-01-01T01:03:01"))
+        );
+
+        dao.createActivities(activitiesToPersist);
+
+        Connection connection = dataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT date, total_active, total_inactive," +
+            " active_hour_1, inactive_hour_1" +
+            " FROM daily_activity ORDER BY date");
+        ResultSet rs = preparedStatement.executeQuery();
+
+        assertThat(rs.next(), equalTo(true));
+        assertThat(rs.getDate("date"), equalTo(Date.valueOf("2013-01-01")));
+        assertThat(rs.getInt("total_active"), equalTo(5));
+        assertThat(rs.getInt("total_inactive"), equalTo(6));
+        assertThat(rs.getInt("active_hour_1"), equalTo(5));
+        assertThat(rs.getInt("inactive_hour_1"), equalTo(6));
+
+        assertThat(rs.next(), equalTo(false));
+    }
+
+    @Test
     public void createActivities_withEmptyList() throws Exception {
         try {
             dao.createActivities(asList());
