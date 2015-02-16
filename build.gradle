@@ -7,10 +7,7 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
 apply plugin: 'war'
-apply plugin: 'jetty'
 
 war {
     baseName = 'pipingpong'

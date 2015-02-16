@@ -7,7 +7,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import javax.servlet.*;
 
-public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class AppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext container) throws ServletException {
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
@@ -16,20 +16,5 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
         ServletRegistration.Dynamic servlet = container.addServlet("dispatcher", new DispatcherServlet(ctx));
         servlet.setLoadOnStartup(1);
         servlet.addMapping("/");
-    }
-
-    @Override
-    protected String[] getServletMappings() {
-        return new String[] { "/" };
-    }
-
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return null;
-    }
-
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[] { AppConfiguration.class };
     }
 }
