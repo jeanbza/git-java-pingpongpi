@@ -5,6 +5,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.*;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
 
-@RestController
+@Controller
 public class ActivityController {
     private BlockingQueue<Activity> activitiesAwaitingPersist = new LinkedBlockingQueue<>();
     private BlockingQueue<Activity> recentActivities = new DelayQueue<Activity>();
