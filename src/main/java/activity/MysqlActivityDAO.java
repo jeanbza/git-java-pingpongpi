@@ -10,7 +10,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
-import static java.util.Arrays.asList;
 
 @Repository
 public class MysqlActivityDAO implements ActivityDAO {
