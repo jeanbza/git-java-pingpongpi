@@ -4,6 +4,7 @@ import org.springframework.cloud.*;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -13,6 +14,7 @@ import static DatabaseUtils.Database.createInitialTables;
 public class AppConfiguration {
     @Configuration
     @Profile("cloud")
+    @EnableScheduling
     static class CloudConfiguration {
         @Bean
         public DataSource dataSource() {
@@ -32,6 +34,7 @@ public class AppConfiguration {
 
     @Configuration
     @Profile("default")
+    @EnableScheduling
     static class LocalConfiguration {
         @Bean
         public DataSource dataSource() throws SQLException {
