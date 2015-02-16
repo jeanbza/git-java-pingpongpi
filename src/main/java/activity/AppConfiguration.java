@@ -17,7 +17,7 @@ public class AppConfiguration {
     @EnableScheduling
     static class CloudConfiguration {
         @Bean
-        public DataSource dataSource() {
+        public DataSource getDataSource() {
             CloudFactory cloudFactory = new CloudFactory();
             Cloud cloud = cloudFactory.getCloud();
             String serviceID = cloud.getServiceInfo("mysql").getId();
@@ -25,7 +25,7 @@ public class AppConfiguration {
         }
 
         @Bean
-        JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        public JdbcTemplate jdbcTemplate(DataSource dataSource) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             createInitialTables(jdbcTemplate);
             return jdbcTemplate;
@@ -48,7 +48,7 @@ public class AppConfiguration {
         }
 
         @Bean
-        JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        public JdbcTemplate jdbcTemplate(DataSource dataSource) {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
             createInitialTables(jdbcTemplate);
             return jdbcTemplate;
