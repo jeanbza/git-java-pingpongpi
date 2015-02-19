@@ -26,6 +26,11 @@ public class ActivityController {
     @Autowired
     private ActivityDAO activityDAO;
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String getHomepage() {
+        return "index";
+    }
+
     @RequestMapping(value = "/activity", method = RequestMethod.GET)
     public ResponseEntity<String> activity() {
         List<Activity> recentActivities = IteratorUtils.toList(this.recentActivities.iterator());
