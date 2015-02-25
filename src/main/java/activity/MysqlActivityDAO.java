@@ -149,6 +149,11 @@ public class MysqlActivityDAO implements ActivityDAO {
         jdbcTemplate.update(insertSql + valueSql + duplicateKeyUpdate);
     }
 
+    @Override
+    public List<DailyActivity> getDailyActivities() {
+        return null;
+    }
+
     private static Map<Integer, Long> hourlyMap() {
         Map<Integer, Long> map = new HashMap<>();
 

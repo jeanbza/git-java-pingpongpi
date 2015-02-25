@@ -11,6 +11,7 @@ import java.sql.Date;
 import java.time.*;
 import java.util.*;
 
+import static Activity.DailyActivityBuilder.dailyActivityBuilder;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -123,5 +124,17 @@ public class MysqlActivityDAOTest {
         } catch (BadSqlGrammarException e) {
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void getDailyActivities() throws Exception {
+        jdbcTemplate.update("INSERT INTO daily_activity(date, total_active, total_inactive, active_hour_1, inactive_hour_1)" +
+            " VALUES ('2013-01-01', 3, 5, 3, 5)");
+
+        List<DailyActivity> dailyActivities = dao.getDailyActivities();
+
+        assertThat(dailyActivities, equalTo(asList(
+            dailyActivityBuilder().build()
+        )));
     }
 }
