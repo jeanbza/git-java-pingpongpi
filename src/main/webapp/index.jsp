@@ -9,8 +9,6 @@
     <link rel="stylesheet" type="text/css" href="css/timeline.css">
 </head>
 <body>
-<div>
-    <div id="mbars"></div>
-</div>
+<div id="scatter-load"></div>
 </body>
 </html>
