@@ -33,6 +33,13 @@ public class ActivityControllerTest {
 
     @Test
     public void testGet() throws Exception {
+        mockMvc.perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void testGetDailyActivities() throws Exception {
         List<DailyActivity> dailyActivityList = asList(
             dailyActivityBuilder()
                 .date(LocalDate.parse("2013-01-01"))
@@ -50,12 +57,33 @@ public class ActivityControllerTest {
                 .build()
         );
 
+        String sampleJson = "[\n" +
+            "    {\n" +
+            "        \"date\": \"2013-01-01\",\n" +
+            "        \"hourlyActive\": [0, 3, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n" +
+            "        \"hourlyInactive\": [0, 5, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n" +
+            "    },\n" +
+            "    {\n" +
+            "        \"date\": \"2014-01-01\",\n" +
+            "        \"hourlyActive\": [0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n" +
+            "        \"hourlyInactive\": [0, 2, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n" +
+            "    }\n" +
+            "]";
+
         doReturn(dailyActivityList).when(activityDAO).getDailyActivities();
 
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/dailyActivity"))
             .andExpect(status().isOk())
-            .andExpect(view().name("index"))
-            .andExpect(model().attribute("dailyActivities", equalTo(dailyActivityList)));
+            .andExpect(content().string(sampleJson));
+    }
+
+    @Test
+    public void testGetActivity() throws Exception {
+        String sampleJson = "[{}]";
+
+        mockMvc.perform(get("/activity"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(sampleJson));
     }
 
     @Test

@@ -1,7 +1,10 @@
 package Activity;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.joda.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.joda.ser.LocalDateSerializer;
 import org.apache.commons.collections.IteratorUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.*;
 import java.io.*;
-import java.time.LocalDateTime;
+import java.text.DateFormat;
+import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -28,14 +32,31 @@ public class ActivityController {
 
     @Autowired
     public ActivityController(ActivityDAO activityDAO) {
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(LocalDate.class, new LocalDateSerializer());
+        module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+
+        jsonMapper.registerModule(module);
         this.activityDAO = activityDAO;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String getHomepage(Model model) {
-        model.addAttribute("dailyActivities", activityDAO.getDailyActivities());
-
+    public String getHomepage() {
         return "index";
+    }
+
+    @RequestMapping(value = "/dailyActivity", method=RequestMethod.GET)
+    public ResponseEntity<String> dailyActivity() {
+        List<DailyActivity> dailyActivities = activityDAO.getDailyActivities();
+
+        String json = null;
+        try {
+            json = jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dailyActivities);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/activity", method = RequestMethod.GET)
