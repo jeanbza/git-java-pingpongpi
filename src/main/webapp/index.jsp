@@ -1,5 +1,10 @@
+<%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core' %>
+
 <html>
 <head>
+    <script type="text/javascript">
+    </script>
+
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>

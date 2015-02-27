@@ -128,13 +128,27 @@ public class MysqlActivityDAOTest {
 
     @Test
     public void getDailyActivities() throws Exception {
-        jdbcTemplate.update("INSERT INTO daily_activity(date, total_active, total_inactive, active_hour_1, inactive_hour_1)" +
-            " VALUES ('2013-01-01', 3, 5, 3, 5)");
+        jdbcTemplate.update("INSERT INTO daily_activity(date, active_hour_1, inactive_hour_1," +
+            " active_hour_5, inactive_hour_5)" +
+            " VALUES ('2013-01-01', 3, 5, 7, 8), ('2014-01-01', 2, 2, 1, 4)");
 
         List<DailyActivity> dailyActivities = dao.getDailyActivities();
 
         assertThat(dailyActivities, equalTo(asList(
-            dailyActivityBuilder().build()
+            dailyActivityBuilder()
+                .date(LocalDate.parse("2013-01-01"))
+                .hourActive(1, 3L)
+                .hourInactive(1, 5L)
+                .hourActive(5, 7L)
+                .hourInactive(5, 8L)
+                .build(),
+            dailyActivityBuilder()
+                .date(LocalDate.parse("2014-01-01"))
+                .hourActive(1, 2L)
+                .hourInactive(1, 2L)
+                .hourActive(5, 1L)
+                .hourInactive(5, 4L)
+                .build()
         )));
     }
 }

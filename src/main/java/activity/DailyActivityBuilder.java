@@ -5,7 +5,7 @@ import java.util.*;
 
 public class DailyActivityBuilder {
     private LocalDate date;
-    private List<Long> hourlyActive, hourlyInactive = sizedList(24);
+    private List<Long> hourlyActive = sizedList(24), hourlyInactive = sizedList(24);
 
     public DailyActivityBuilder date(LocalDate date) {
         this.date = date;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.*;
@@ -23,11 +24,17 @@ public class ActivityController {
     private BlockingQueue<Activity> recentActivities = new DelayQueue<Activity>();
 
     private final ObjectMapper jsonMapper = new ObjectMapper();
-    @Autowired
     private ActivityDAO activityDAO;
 
+    @Autowired
+    public ActivityController(ActivityDAO activityDAO) {
+        this.activityDAO = activityDAO;
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String getHomepage() {
+    public String getHomepage(Model model) {
+        model.addAttribute("dailyActivities", activityDAO.getDailyActivities());
+
         return "index";
     }
 

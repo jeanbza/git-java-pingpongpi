@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.*;
 import org.springframework.stereotype.Repository;
 
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
+import static java.util.Collections.emptyList;
 
 @Repository
 public class MysqlActivityDAO implements ActivityDAO {
@@ -28,8 +30,7 @@ public class MysqlActivityDAO implements ActivityDAO {
             return;
         }
 
-        Map<LocalDate, List<Activity>> datesAndTheirActivities = activitiesToPersist.stream()
-            .collect(Collectors.groupingBy(activity -> activity.getCreatedAt().toLocalDate()));
+        Map<LocalDate, List<Activity>> datesAndTheirActivities = activitiesToPersist.stream().collect(Collectors.groupingBy(activity -> activity.getCreatedAt().toLocalDate()));
 
         Map<LocalDate, Long> datesAndTheirTotalActive = new HashMap<>();
         Map<LocalDate, Long> datesAndTheirTotalInactive = new HashMap<>();
@@ -37,26 +38,21 @@ public class MysqlActivityDAO implements ActivityDAO {
         Map<LocalDate, Map<Integer, Long>> datesAndTheirHourlyTotalInactive = new HashMap<>();
 
         datesAndTheirActivities.forEach((date, dailyActivities) -> {
-            long totalDailyActiveCount = dailyActivities.stream()
-                .filter(activity -> activity.isActive())
-                .count();
+            long totalDailyActiveCount = dailyActivities.stream().filter(activity -> activity.isActive()).count();
 
             datesAndTheirTotalActive.put(date, totalDailyActiveCount);
-            datesAndTheirTotalInactive.put(date, dailyActivities.size()-totalDailyActiveCount);
+            datesAndTheirTotalInactive.put(date, dailyActivities.size() - totalDailyActiveCount);
 
-            Map<Integer, List<Activity>> activitiesByHour = dailyActivities.stream()
-                .collect(Collectors.groupingBy(activity -> activity.getCreatedAt().getHour()));
+            Map<Integer, List<Activity>> activitiesByHour = dailyActivities.stream().collect(Collectors.groupingBy(activity -> activity.getCreatedAt().getHour()));
 
             Map<Integer, Long> hoursAndTheirTotalActive = hourlyMap();
             Map<Integer, Long> hoursAndTheirTotalInactive = hourlyMap();
 
             activitiesByHour.forEach((hour, hourlyActivities) -> {
-                long totalHourlyActiveCount = hourlyActivities.stream()
-                    .filter(activity -> activity.isActive())
-                    .count();
+                long totalHourlyActiveCount = hourlyActivities.stream().filter(activity -> activity.isActive()).count();
 
                 hoursAndTheirTotalActive.put(hour, totalHourlyActiveCount);
-                hoursAndTheirTotalInactive.put(hour, hourlyActivities.size()-totalHourlyActiveCount);
+                hoursAndTheirTotalInactive.put(hour, hourlyActivities.size() - totalHourlyActiveCount);
             });
 
             datesAndTheirHourlyTotalActive.put(date, hoursAndTheirTotalActive);
@@ -77,20 +73,14 @@ public class MysqlActivityDAO implements ActivityDAO {
         Collection<String> valueRows = new ArrayList<>();
 
         datesAndTheirTotalActive.keySet().iterator().forEachRemaining(date -> {
-            String hourlyActiveValues = datesAndTheirHourlyTotalActive.get(date).values().stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
+            String hourlyActiveValues = datesAndTheirHourlyTotalActive.get(date).values().stream().map(Object::toString).collect(Collectors.joining(","));
 
-            String hourlyInactiveValues = datesAndTheirHourlyTotalInactive.get(date).values().stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
+            String hourlyInactiveValues = datesAndTheirHourlyTotalInactive.get(date).values().stream().map(Object::toString).collect(Collectors.joining(","));
 
             String totalActive = datesAndTheirTotalActive.get(date).toString();
             String totalInactive = datesAndTheirTotalInactive.get(date).toString();
 
-            valueRows.add(format("(\"{0}\",{1},{2},{3},{4})",
-                date, totalActive, totalInactive, hourlyActiveValues, hourlyInactiveValues)
-            );
+            valueRows.add(format("(\"{0}\",{1},{2},{3},{4})", date, totalActive, totalInactive, hourlyActiveValues, hourlyInactiveValues));
         });
 
         String valueSql = valueRows.stream().collect(Collectors.joining(","));
@@ -151,7 +141,32 @@ public class MysqlActivityDAO implements ActivityDAO {
 
     @Override
     public List<DailyActivity> getDailyActivities() {
-        return null;
+        List<DailyActivity> dailyActivities = jdbcTemplate.query("SELECT date," +
+            " active_hour_0, active_hour_1, active_hour_2, active_hour_3, active_hour_4, active_hour_5," +
+            " active_hour_6, active_hour_7, active_hour_8, active_hour_9, active_hour_10, active_hour_11," +
+            " active_hour_12, active_hour_13, active_hour_14, active_hour_15, active_hour_16, active_hour_17," +
+            " active_hour_18, active_hour_19, active_hour_20, active_hour_21, active_hour_22, active_hour_23," +
+            " inactive_hour_0, inactive_hour_1, inactive_hour_2, inactive_hour_3, inactive_hour_4, inactive_hour_5," +
+            " inactive_hour_6, inactive_hour_7, inactive_hour_8, inactive_hour_9, inactive_hour_10, inactive_hour_11," +
+            " inactive_hour_12, inactive_hour_13, inactive_hour_14, inactive_hour_15, inactive_hour_16, inactive_hour_17," +
+            " inactive_hour_18, inactive_hour_19, inactive_hour_20, inactive_hour_21, inactive_hour_22, inactive_hour_23" +
+            " FROM daily_activity", new RowMapper<DailyActivity>() {
+            @Override
+            public DailyActivity mapRow(ResultSet rs, int rowNum) throws SQLException {
+                LocalDate date = rs.getDate("date").toLocalDate();
+                List<Long> active = new ArrayList<>();
+                List<Long> inactive = new ArrayList<>();
+
+                for (int i = 0; i < 24; i++) {
+                    active.add(rs.getLong(i+2));
+                    inactive.add(rs.getLong(i+2+24));
+                }
+
+                return new DailyActivity(date, active, inactive);
+            }
+        });
+
+        return dailyActivities;
     }
 
     private static Map<Integer, Long> hourlyMap() {
