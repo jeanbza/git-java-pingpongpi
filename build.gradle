@@ -42,10 +42,6 @@ dependencies {
         "org.mockito:mockito-core:1.9.5",
         "org.springframework:spring-test:4.1.0.RELEASE"
     )
-
-    providedRuntime(
-        "org.glassfish.web:javax.servlet.jsp.jstl:1.2.2"
-    )
 }
 
 task wrapper(type: Wrapper) {
