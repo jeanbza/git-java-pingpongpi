@@ -132,6 +132,7 @@ public class MysqlActivityDAOTest {
             " active_hour_5, inactive_hour_5)" +
             " VALUES ('2013-01-01', 3, 5, 7, 8), ('2014-01-01', 2, 2, 1, 4)");
 
+        dao.refreshDailyActivities();
         List<DailyActivity> dailyActivities = dao.getDailyActivities();
 
         assertThat(dailyActivities, equalTo(asList(

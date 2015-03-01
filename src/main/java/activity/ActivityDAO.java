@@ -6,4 +6,6 @@ public interface ActivityDAO {
     public void createActivities(List<Activity> activitiesToPersist);
 
     public List<DailyActivity> getDailyActivities();
+
+    public void refreshDailyActivities();
 }

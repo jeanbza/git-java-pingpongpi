@@ -2,6 +2,7 @@ package Activity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -17,6 +18,7 @@ import static java.util.Collections.emptyList;
 public class MysqlActivityDAO implements ActivityDAO {
     private final JdbcTemplate jdbcTemplate;
     private static final DateTimeFormatter SQL_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s");
+    private List<DailyActivity> dailyActivities;
 
     @Autowired
     public MysqlActivityDAO(JdbcTemplate jdbcTemplate) {
@@ -141,7 +143,11 @@ public class MysqlActivityDAO implements ActivityDAO {
 
     @Override
     public List<DailyActivity> getDailyActivities() {
-        List<DailyActivity> dailyActivities = jdbcTemplate.query("SELECT date," +
+        return dailyActivities;
+    }
+
+    public void refreshDailyActivities() {
+        dailyActivities = jdbcTemplate.query("SELECT date," +
             " active_hour_0, active_hour_1, active_hour_2, active_hour_3, active_hour_4, active_hour_5," +
             " active_hour_6, active_hour_7, active_hour_8, active_hour_9, active_hour_10, active_hour_11," +
             " active_hour_12, active_hour_13, active_hour_14, active_hour_15, active_hour_16, active_hour_17," +
@@ -165,8 +171,11 @@ public class MysqlActivityDAO implements ActivityDAO {
                 return new DailyActivity(date, active, inactive);
             }
         });
+    }
 
-        return dailyActivities;
+    @Scheduled(fixedDelay=1000*60*60)
+    private void scheduledRefreshDailyActivities() {
+        refreshDailyActivities();
     }
 
     private static Map<Integer, Long> hourlyMap() {

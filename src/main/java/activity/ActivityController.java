@@ -78,12 +78,12 @@ public class ActivityController {
     }
 
     @Scheduled(fixedDelay=1000)
-    public void drainRecentActivities() {
+    private void drainRecentActivities() {
         recentActivities.drainTo(activitiesAwaitingPersist);
     }
 
     @Scheduled(fixedDelay=1000*60*5)
-    public void drainActivitiesAwaitingPersist() {
+    private void drainActivitiesAwaitingPersist() {
         List<Activity> activitiesToPersist = new ArrayList<>();
         activitiesAwaitingPersist.drainTo(activitiesToPersist);
         activityDAO.createActivities(activitiesToPersist);

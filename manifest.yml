@@ -1,8 +1,8 @@
 ---
 applications:
-  - name: pipingpong
+  - name: pingpongping
     buildpack: java_buildpack
-    path: build/libs/pingpongping-0.7.1.war
+    path: build/libs/pingpongping-0.7.2.war
     services:
       - mysql
     env:
