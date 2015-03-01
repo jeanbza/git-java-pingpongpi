@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
