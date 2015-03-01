@@ -92,7 +92,7 @@ function normalizeDailyActivities(dailyActivities) {
 
 $(document).ready(function () {
     $.ajax({
-        url: "/pingpong/dailyActivity",
+        url: document.URL+"/dailyActivity",
         success: function(data) {
             var jsonData = JSON.parse(data);
             var normalizedJsonData = normalizeDailyActivities(jsonData);
