@@ -2,14 +2,11 @@ package Activity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.joda.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.joda.ser.LocalDateSerializer;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.*;
@@ -34,7 +31,6 @@ public class ActivityController {
     public ActivityController(ActivityDAO activityDAO) {
         SimpleModule module = new SimpleModule();
         module.addSerializer(LocalDate.class, new LocalDateSerializer());
-        module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
 
         jsonMapper.registerModule(module);
         this.activityDAO = activityDAO;
