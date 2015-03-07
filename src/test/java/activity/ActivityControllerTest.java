@@ -70,7 +70,8 @@ public class ActivityControllerTest {
 
         mockMvc.perform(get("/dailyActivity"))
             .andExpect(status().isOk())
-            .andExpect(content().string(sampleJson));
+            .andExpect(content().string(sampleJson))
+            .andExpect(header().string("content-type", "application/json"));
     }
 
     @Test
@@ -79,18 +80,21 @@ public class ActivityControllerTest {
 
         mockMvc.perform(get("/activity"))
             .andExpect(status().isOk())
-            .andExpect(content().string(sampleJson));
+            .andExpect(content().string(sampleJson))
+            .andExpect(header().string("content-type", "application/json"));
     }
 
     @Test
     public void testPost() throws Exception {
         mockMvc.perform(post("/activity").content("{\"active\":true}"))
-            .andExpect(status().isAccepted());
+            .andExpect(status().isAccepted())
+            .andExpect(header().string("content-type", "application/json"));
     }
 
     @Test
     public void testPost_withBadRequest() throws Exception {
         mockMvc.perform(post("/activity").content("{\"boom\":true}"))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest())
+            .andExpect(header().string("content-type", "application/json"));
     }
 }

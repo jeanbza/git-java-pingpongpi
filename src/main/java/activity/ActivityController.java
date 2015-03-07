@@ -51,7 +51,7 @@ public class ActivityController {
             e.printStackTrace();
         }
 
-        return new ResponseEntity<>(json, HttpStatus.OK);
+        return new ResponseEntity<>(json, getJsonHeaders(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/activity", method = RequestMethod.GET)
@@ -61,7 +61,7 @@ public class ActivityController {
             .map(activity -> format("\"active\":{0},\"created_at\":\"{1}\"", activity.isActive(), activity.getCreatedAt()))
             .collect(Collectors.joining("},{")) + "}]";
 
-        return new ResponseEntity<>(json, HttpStatus.OK);
+        return new ResponseEntity<>(json, getJsonHeaders(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/activity", method = RequestMethod.POST)
@@ -71,10 +71,10 @@ public class ActivityController {
         if (activityRequest.containsKey("active")) {
             recentActivities.put(new Activity(activityRequest.get("active"), LocalDateTime.now()));
 
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(getJsonHeaders(), HttpStatus.ACCEPTED);
         }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(getJsonHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     @Scheduled(fixedDelay=1000)
@@ -87,5 +87,11 @@ public class ActivityController {
         List<Activity> activitiesToPersist = new ArrayList<>();
         activitiesAwaitingPersist.drainTo(activitiesToPersist);
         activityDAO.createActivities(activitiesToPersist);
+    }
+
+    private HttpHeaders getJsonHeaders() {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Content-Type", "application/json");
+        return responseHeaders;
     }
 }
