@@ -1,28 +1,46 @@
 package Activity;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.time.LocalDate;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
-import static java.util.Collections.emptyList;
 
 @Repository
 public class MysqlActivityDAO implements ActivityDAO {
     private final JdbcTemplate jdbcTemplate;
     private static final DateTimeFormatter SQL_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m:s");
     private List<DailyActivity> dailyActivities;
+    private BlockingQueue<Activity> activitiesAwaitingPersist = new LinkedBlockingQueue<>();
+    private BlockingQueue<Activity> recentActivities = new DelayQueue<Activity>();
 
     @Autowired
     public MysqlActivityDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public List<Activity> getRecentActivities() {
+        List<Activity> activities = IteratorUtils.toList(this.recentActivities.iterator());
+        return activities;
+    }
+
+    @Override
+    public void createActivity(boolean active) {
+        try {
+            recentActivities.put(new Activity(active, LocalDateTime.now()));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: Refactor this...
@@ -164,8 +182,8 @@ public class MysqlActivityDAO implements ActivityDAO {
                 List<Long> inactive = new ArrayList<>();
 
                 for (int i = 0; i < 24; i++) {
-                    active.add(rs.getLong(i+2));
-                    inactive.add(rs.getLong(i+2+24));
+                    active.add(rs.getLong(i + 2));
+                    inactive.add(rs.getLong(i + 2 + 24));
                 }
 
                 return new DailyActivity(date, active, inactive);
@@ -173,7 +191,19 @@ public class MysqlActivityDAO implements ActivityDAO {
         });
     }
 
-    @Scheduled(fixedDelay=1000*60*60)
+    @Scheduled(fixedDelay=1000)
+    private void drainRecentActivities() {
+        recentActivities.drainTo(activitiesAwaitingPersist);
+    }
+
+    @Scheduled(fixedDelay=1000*60*5)
+    private void drainActivitiesAwaitingPersist() {
+        List<Activity> activitiesToPersist = new ArrayList<>();
+        activitiesAwaitingPersist.drainTo(activitiesToPersist);
+        createActivities(activitiesToPersist);
+    }
+
+    @Scheduled(fixedDelay = 1000 * 60 * 60)
     private void scheduledRefreshDailyActivities() {
         refreshDailyActivities();
     }

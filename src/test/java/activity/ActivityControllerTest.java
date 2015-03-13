@@ -4,17 +4,19 @@ import org.junit.*;
 import org.mockito.*;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 import static Activity.DailyActivityBuilder.dailyActivityBuilder;
+import static Activity.ActivityBuilder.activityBuilder;
 
 public class ActivityControllerTest {
     @Mock ActivityDAO activityDAO;
@@ -76,7 +78,18 @@ public class ActivityControllerTest {
 
     @Test
     public void testGetActivity() throws Exception {
-        String sampleJson = "[{}]";
+        doReturn(asList(
+            activityBuilder()
+                .active(true)
+                .createdAt(LocalDateTime.parse("2014-01-01T00:00:00"))
+                .build(),
+            activityBuilder()
+                .active(false)
+                .createdAt(LocalDateTime.parse("2014-02-02T00:00:00"))
+                .build()
+        )).when(activityDAO).getRecentActivities();
+
+        String sampleJson = "[{\"active\":true,\"created_at\":\"2014-01-01T00:00\"},{\"active\":false,\"created_at\":\"2014-02-02T00:00\"}]";
 
         mockMvc.perform(get("/activity"))
             .andExpect(status().isOk())
@@ -85,10 +98,19 @@ public class ActivityControllerTest {
     }
 
     @Test
+    public void testGetActivity_WithNoData() throws Exception {
+        mockMvc.perform(get("/activity"))
+            .andExpect(status().is(504))
+            .andExpect(content().string("No data found - something is wrong with the sensor pi. Please fix."));
+    }
+
+    @Test
     public void testPost() throws Exception {
         mockMvc.perform(post("/activity").content("{\"active\":true}"))
             .andExpect(status().isAccepted())
             .andExpect(header().string("content-type", "application/json"));
+
+        verify(activityDAO).createActivity(true);
     }
 
     @Test

@@ -36,7 +36,7 @@ public class MysqlActivityDAOTest {
     }
 
     @Test
-    public void createActivities() throws Exception {
+    public void testCreateActivities() throws Exception {
         List<Activity> activitiesToPersist = asList(
             new Activity(true, LocalDateTime.parse("2013-01-01T01:01:01")),
 
@@ -89,7 +89,7 @@ public class MysqlActivityDAOTest {
     }
 
     @Test
-    public void createActivities_withExistingData() throws Exception {
+    public void testCreateActivities_withExistingData() throws Exception {
         jdbcTemplate.update("INSERT INTO daily_activity(date, total_active, total_inactive, active_hour_1, inactive_hour_1)" +
             " VALUES ('2013-01-01', 3, 5, 3, 5)");
 
@@ -118,7 +118,7 @@ public class MysqlActivityDAOTest {
     }
 
     @Test
-    public void createActivities_withEmptyList() throws Exception {
+    public void testCreateActivities_withEmptyList() throws Exception {
         try {
             dao.createActivities(asList());
         } catch (BadSqlGrammarException e) {
@@ -127,7 +127,7 @@ public class MysqlActivityDAOTest {
     }
 
     @Test
-    public void getDailyActivities() throws Exception {
+    public void testGetDailyActivities() throws Exception {
         jdbcTemplate.update("INSERT INTO daily_activity(date, active_hour_1, inactive_hour_1," +
             " active_hour_5, inactive_hour_5)" +
             " VALUES ('2013-01-01', 3, 5, 7, 8), ('2014-01-01', 2, 2, 1, 4)");
