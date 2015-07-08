@@ -1,7 +1,7 @@
 ---
 applications:
   - name: pingpongping
-    buildpack: java_buildpack
+    buildpack: https://github.com/cloudfoundry/java-buildpack.git
     path: build/libs/pingpongping-0.8.0.war
     services:
       - mysql
